@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qris-network-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qris-network-service
+  template:
+    metadata:
+      labels:
+        app: qris-network-service
+    spec:
+      containers:
+        - name: qris-network-service
+          image: jtl-tkgiharbor.hq.bni.co.id/tsd/qris-network-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AJ_URI_ENDPOINT
+              value: "http://192.168.151.220:58180/outgoing/artajasa.v3"
+            - name: REDIS_IP
+              value: "redis-19757.c295.ap-southeast-1-1.ec2.cloud.redislabs.com"
+            - name: REDIS_PORT
+              value: "19757"
+            - name: REDIS_PASSWORD
+              value: "redis"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qris-network-service
+spec:
+  selector:
+    app: qris-network-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: qris-network-service
+spec:
+  to:
+    kind: Service
+    name: qris-network-service
+    weight: 100
+  port:
+    targetPort: 8080
+  wildcardPolicy: None
