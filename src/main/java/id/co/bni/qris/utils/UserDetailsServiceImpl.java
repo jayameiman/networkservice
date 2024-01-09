@@ -1,7 +1,8 @@
 package id.co.bni.qris.utils;
 
-import id.co.bni.qris.mpm.model.user.UserInfo;
-import id.co.bni.qris.repositori.UserRepository;
+import id.co.bni.qris.domain.model.user.UserInfo;
+import id.co.bni.qris.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

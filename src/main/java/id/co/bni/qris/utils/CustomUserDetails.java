@@ -1,10 +1,11 @@
 package id.co.bni.qris.utils;
 
-import id.co.bni.qris.mpm.model.user.UserInfo;
-import id.co.bni.qris.mpm.model.user.UserRoles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import id.co.bni.qris.domain.model.user.UserInfo;
+import id.co.bni.qris.domain.model.user.UserRoles;
 
 import java.util.ArrayList;
 import java.util.Collection;

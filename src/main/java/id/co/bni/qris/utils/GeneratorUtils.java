@@ -1,7 +1,5 @@
 package id.co.bni.qris.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -50,7 +48,7 @@ public class GeneratorUtils {
         return dateFormat.format(currentDate);
     }
 
-    public static String getRandomNumberString() {
+    public String getRandomNumberString() {
         // It will generate 6 digit random Number.
         // from 0 to 999999
         Random rnd = new Random();
