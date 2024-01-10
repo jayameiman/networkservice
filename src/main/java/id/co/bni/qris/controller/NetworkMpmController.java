@@ -5,10 +5,11 @@ import com.google.gson.Gson;
 import id.co.bni.qris.service.auth.UserService;
 import id.co.bni.qris.service.mpm.SignMPMCBService;
 import id.co.bni.qris.domain.bo.*;
-import id.co.bni.qris.domain.bo.BOSignOn.QRSignOnRQ;
 import id.co.bni.qris.domain.dto.*;
 import id.co.bni.qris.service.auth.JwtService;
 import id.co.bni.qris.utils.GeneratorUtils;
+import jakarta.validation.Valid;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +23,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/v1/qris")
-public class NetworkController {
-    public static Logger logger = LogManager.getLogger(NetworkController.class);
+@RequestMapping(value = "/v1/qris/mpm")
+public class NetworkMpmController {
+    public static Logger logger = LogManager.getLogger(NetworkMpmController.class);
 
     @Autowired
     SignMPMCBService signMPMCBService;
@@ -41,21 +42,14 @@ public class NetworkController {
     @Autowired
     UserService userService;
 
-    @GetMapping("")
-    public String index() {
-        return "Greetings from Spring Boot!";
-    }
-
-    @PostMapping(value = "/mpm/signOn", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> signonService(@RequestBody BOSignOnRQ request) throws Exception {
-    // public ResponseEntity<Object> signonService() throws Exception {
+    @PostMapping(value = "/signOn", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> signonService(@Valid @RequestBody BOSignOnRQ request) throws Exception {
         logger.info("signon controller");
         
         return signMPMCBService.signOnAJCrossService(request);
-        // return new ResponseEntity<Object>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/mpm/signOff",
+    @PostMapping(value = "/signOff",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Object signOffService(@RequestBody String request) throws Exception {
@@ -72,7 +66,7 @@ public class NetworkController {
         return new ResponseEntity<Object>(response.toMap(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/mpm/echoTest",
+    @PostMapping(value = "/echoTest",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> echoTestService(@RequestBody @NotNull String request) throws Exception {
@@ -89,7 +83,7 @@ public class NetworkController {
         return new ResponseEntity<Object>(response.toMap(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/mpm/cutOver",
+    @PostMapping(value = "/cutOver",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -107,7 +101,7 @@ public class NetworkController {
         return new ResponseEntity<Object>(response.toMap(), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/ping")
     public String test() {
         try {

@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/v1/qris").permitAll()
                 .requestMatchers("/v1/auth/**").permitAll()
                 .requestMatchers("/v1/qris/mpm/**").permitAll()
+                .requestMatchers("/v1/qris/tts/**").permitAll()
                 .anyRequest().authenticated())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())

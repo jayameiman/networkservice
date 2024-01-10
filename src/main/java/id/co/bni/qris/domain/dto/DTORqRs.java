@@ -1,9 +1,23 @@
 package id.co.bni.qris.domain.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
+@NoArgsConstructor
 public class DTORqRs {
+    @NotNull(message = "msgType can't be null")
+    @NotEmpty(message = "msgType can't be empty")
     private String msgType;
+
     private String transmissionDateTime;
+    
     private String msgSTAN;
+    
+    @NotNull(message = "networkCode can't be null")
+    @NotEmpty(message = "networkCode can't be empty")
     private String networkCode;
 
     public String getMsgType() {
