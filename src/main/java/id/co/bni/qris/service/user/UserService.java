@@ -1,4 +1,4 @@
-package id.co.bni.qris.service.auth;
+package id.co.bni.qris.service.user;
 
 import org.springframework.http.ResponseEntity;
 

@@ -1,4 +1,4 @@
-package id.co.bni.qris.service.auth;
+package id.co.bni.qris.service.user;
 
 import id.co.bni.qris.domain.dto.auth.UserResponse;
 import id.co.bni.qris.domain.model.user.UserInfo;
@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceHandler implements UserService {
     @Autowired
     UserRepository userRepository;
 

@@ -1,19 +1,17 @@
 package id.co.bni.qris.controller;
 
-import com.google.gson.Gson;
-
-import id.co.bni.qris.service.auth.UserService;
-import id.co.bni.qris.service.mpm.SignMPMCBService;
-import id.co.bni.qris.domain.bo.*;
-import id.co.bni.qris.domain.dto.*;
+import id.co.bni.qris.service.mpm.SignMPMCBHandler;
+import id.co.bni.qris.service.user.UserService;
+import id.co.bni.qris.domain.bo.BOCutOverRQ;
+import id.co.bni.qris.domain.bo.BOEchoTestRQ;
+import id.co.bni.qris.domain.bo.BOSignOffRQ;
+import id.co.bni.qris.domain.bo.BOSignOnRQ;
 import id.co.bni.qris.service.auth.JwtService;
 import id.co.bni.qris.utils.GeneratorUtils;
 import jakarta.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +26,7 @@ public class NetworkMpmController {
     public static Logger logger = LogManager.getLogger(NetworkMpmController.class);
 
     @Autowired
-    SignMPMCBService signMPMCBService;
+    SignMPMCBHandler signMPMCBService;
 
     @Autowired
     GeneratorUtils generator;
@@ -42,9 +40,11 @@ public class NetworkMpmController {
     @Autowired
     UserService userService;
 
-    @PostMapping(value = "/signOn", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> signonService(@Valid @RequestBody BOSignOnRQ request) throws Exception {
-        logger.info("signon controller");
+    @PostMapping(value = "/signOn", 
+            consumes = MediaType.APPLICATION_JSON_VALUE, 
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> signonController(@Valid @RequestBody BOSignOnRQ request) throws Exception {
+        logger.info("from controller: mpm sign on started");
         
         return signMPMCBService.signOnAJCrossService(request);
     }
@@ -52,53 +52,29 @@ public class NetworkMpmController {
     @PostMapping(value = "/signOff",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object signOffService(@RequestBody String request) throws Exception {
-        JSONObject requestBody = new JSONObject(request).getJSONObject("QRSignOffRQ");
-        BOModel boModel = new BOModel();
-        logger.info("Original Body Request : {} ", requestBody.toString());
-
-        boModel.setBoQRSignOffRQ(new Gson().fromJson(requestBody.toString(), BOSignOff.QRSignOffRQ.class));
-
-        DTOSignOff.QRSignOffRS result = signMPMCBService.signOffACrossJService(boModel.getBoQRSignOffRQ());
-        JSONObject response = new JSONObject();
-        response.put("QRSignOffRS", result);
-
-        return new ResponseEntity<Object>(response.toMap(), HttpStatus.OK);
+    public ResponseEntity<Object> signOffController(@Valid @RequestBody BOSignOffRQ request) throws Exception {
+        logger.info("from controller: mpm sign off started");
+        
+        return signMPMCBService.signOffACrossJService(request);
     }
 
     @PostMapping(value = "/echoTest",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> echoTestService(@RequestBody @NotNull String request) throws Exception {
-        JSONObject requestBody = new JSONObject(request).getJSONObject("QREchoTestRQ");
-        BOModel boModel = new BOModel();
-        logger.info("Original Body Request : {} ", requestBody.toString());
-
-        boModel.setBoQREchoTestRQ(new Gson().fromJson(requestBody.toString(), BOEchoTest.QREchoTestRQ.class));
-
-        DTOEchoTest.QREchoTestRS result = signMPMCBService.echoTestAJCrossService(boModel.getBoQREchoTestRQ());
-        JSONObject response = new JSONObject();
-        response.put("QREchoTestRS", result);
-
-        return new ResponseEntity<Object>(response.toMap(), HttpStatus.OK);
+    public ResponseEntity<Object> echoTestController(@Valid @RequestBody BOEchoTestRQ request) throws Exception {
+        logger.info("from controller: mpm echo test started");        
+        
+        return signMPMCBService.echoTestAJCrossService(request);
     }
-
+    
     @PostMapping(value = "/cutOver",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> cutOverService(@RequestBody @NotNull String request) throws Exception{
-        JSONObject requestBody = new JSONObject(request).getJSONObject("QRCutoverRQ");
-        BOModel boModel = new BOModel();
-        logger.info("Original Body Request : {} ", requestBody.toString());
+    public ResponseEntity<Object> cutOverController(@Valid @RequestBody BOCutOverRQ request) throws Exception{
+        logger.info("from controller: mpm cut over started");
 
-        boModel.setBoQRCutoverRQ(new Gson().fromJson(requestBody.toString(), BOCutOver.QRCutoverRQ.class));
-
-        DTOCutOver.QRCutoverRS result = signMPMCBService.cutoverAJCrossService(boModel.getBoQRCutoverRQ());
-        JSONObject response = new JSONObject();
-        response.put("QRCutoverRS", result);
-
-        return new ResponseEntity<Object>(response.toMap(), HttpStatus.OK);
+        return signMPMCBService.cutoverAJCrossService(request); 
     }
 
     @PreAuthorize("hasAuthority('USER')")

@@ -30,13 +30,15 @@ public class AuthController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> register(@Valid @RequestBody AuthRequestDTO registerDto) {
-        logger.info("register controller");
+        logger.info("from controller: register started");
+        
         return authService.register(registerDto);
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> login(@Valid @RequestBody AuthRequestDTO loginDto){
-        logger.info("login controller");
+        logger.info("from controller: login started");
+
         return authService.login(loginDto);
     }
 }

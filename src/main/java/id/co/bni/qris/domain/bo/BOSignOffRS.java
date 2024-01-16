@@ -5,17 +5,8 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @NoArgsConstructor
-public class BOSignOnRS extends BaseNetworkBody{
-    private String additionalData;
+public class BOSignOffRS extends BaseNetworkBody {
     private String responseCode;
-
-    public String getAdditionalData() {
-        return additionalData;
-    }
-
-    public void setAdditionalData(String additionalData) {
-        this.additionalData = additionalData;
-    }
 
     public String getResponseCode() {
         return responseCode;
@@ -24,4 +15,5 @@ public class BOSignOnRS extends BaseNetworkBody{
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
     }
+
 }

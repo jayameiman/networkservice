@@ -1,4 +1,4 @@
-package id.co.bni.qris.domain.dto;
+package id.co.bni.qris.domain.bo;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @NoArgsConstructor
-public class DTORqRs {
+public class BaseNetworkBody {
     @NotNull(message = "msgType can't be null")
     @NotEmpty(message = "msgType can't be empty")
     private String msgType;
