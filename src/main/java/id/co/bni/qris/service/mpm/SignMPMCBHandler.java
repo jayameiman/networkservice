@@ -23,7 +23,10 @@ import id.co.bni.qris.domain.bo.BOSignOffRQ;
 import id.co.bni.qris.domain.bo.BOSignOffRS;
 import id.co.bni.qris.domain.bo.BOSignOnRQ;
 import id.co.bni.qris.domain.bo.BOSignOnRS;
+import id.co.bni.qris.domain.dto.DTOCutOverRQ;
 import id.co.bni.qris.domain.dto.DTOCutOverRS;
+import id.co.bni.qris.domain.dto.DTOEchoTestRQ;
+import id.co.bni.qris.domain.dto.DTOEchoTestRS;
 import id.co.bni.qris.domain.dto.DTOSignOffRQ;
 import id.co.bni.qris.domain.dto.DTOSignOffRS;
 import id.co.bni.qris.domain.dto.DTOSignOnRQ;
@@ -161,9 +164,11 @@ public class SignMPMCBHandler implements SignMPMCBService {
 
             request.setTransmissionDateTime(transmissionDateTime);
             request.setMsgSTAN(generator.getRandomNumberString());
+
+            DTOEchoTestRQ dtoEchoTestRQ = DTOEchoTestRQ.builder().QREchoTestRQ(request).build();
             
-            logger.info("request content: {}", RestUtil.toJson(request));
-            String result = serviceClient.sendRequest(url, request.toString());
+            logger.info("request content: {}", RestUtil.toJson(dtoEchoTestRQ));
+            String result = serviceClient.sendRequest(url, RestUtil.toJson(dtoEchoTestRQ));
             logger.info("[EchoTestAJCrossService] response from Switcher : {}", result);
             
             JSONObject resp = new JSONObject(result).getJSONObject("QREchoTestRS");
@@ -174,13 +179,12 @@ public class SignMPMCBHandler implements SignMPMCBService {
                 throw new Exception(message);
             }
 
-            DTOCutOverRS dtoCutOver = RestUtil.jsonToObject(result, DTOCutOverRS.class);
-            boEchoTestRS.setMsgSTAN(dtoCutOver.getQRCutoverRS().getMsgSTAN());
-            boEchoTestRS.setMsgType(dtoCutOver.getQRCutoverRS().getMsgType());
-            boEchoTestRS.setNetworkCode(dtoCutOver.getQRCutoverRS().getNetworkCode());
-            boEchoTestRS.setResponseCode(dtoCutOver.getQRCutoverRS().getProcessingDate());
-            boEchoTestRS.setResponseCode(dtoCutOver.getQRCutoverRS().getResponseCode());
-            boEchoTestRS.setTransmissionDateTime(dtoCutOver.getQRCutoverRS().getTransmissionDateTime());
+            DTOEchoTestRS dtoEchoTestRS = RestUtil.jsonToObject(result, DTOEchoTestRS.class);
+            boEchoTestRS.setMsgSTAN(dtoEchoTestRS.getQREchoTestRS().getMsgSTAN());
+            boEchoTestRS.setMsgType(dtoEchoTestRS.getQREchoTestRS().getMsgType());
+            boEchoTestRS.setNetworkCode(dtoEchoTestRS.getQREchoTestRS().getNetworkCode());
+            boEchoTestRS.setResponseCode(dtoEchoTestRS.getQREchoTestRS().getResponseCode());
+            boEchoTestRS.setTransmissionDateTime(dtoEchoTestRS.getQREchoTestRS().getTransmissionDateTime());
 
             logger.info("[echoTestAJService] Create Request Body : {}", RestUtil.toJson(boEchoTestRS));
         }catch (Exception e){
@@ -195,8 +199,6 @@ public class SignMPMCBHandler implements SignMPMCBService {
         BOCutOverRS boCutOverRS = BOCutOverRS.builder().build();
         
         try {
-            String url = urlCb.concat("/cutover");
-            logger.info("[cutOverAJCrossService] Endpoint : {}", url);
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMddHHmmss");
             OffsetDateTime now = OffsetDateTime.now();
@@ -211,6 +213,8 @@ public class SignMPMCBHandler implements SignMPMCBService {
             boCutOverRS.setMsgSTAN(generator.getRandomNumberString());
             boCutOverRS.setTransmissionDateTime(transmissionDateTime);
             boCutOverRS.setNetworkCode(request.getNetworkCode());
+            boCutOverRS.setProcessingDate(request.getProcessingDate());
+            boCutOverRS.setResponseCode("00");
 
             logger.info("[cutoverAJService]");
         }catch (Exception e){

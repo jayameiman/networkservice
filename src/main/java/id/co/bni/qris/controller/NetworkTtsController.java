@@ -56,7 +56,6 @@ public class NetworkTtsController {
     @PostMapping(value = "/cutOver",
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> cutOverController(@RequestBody BOCutOverRQ request) throws Exception{
         logger.info("from controller: tts sign cut over started");
         
